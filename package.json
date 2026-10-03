@@ -1,0 +1,35 @@
+{
+  "name": "pi-edit-git-commit",
+  "version": "1.0.0",
+  "description": "Pi extension to commit after each edit or write.",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi",
+    "git"
+  ],
+  "license": "MIT",
+  "author": "Alexander Sambale",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexanderSambale/pi-edit-git-commit.git"
+  },
+  "homepage": "https://samxela.eu",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "^1.0.0"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "^1.0.0"
+  }
+}
