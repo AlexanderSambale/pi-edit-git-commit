@@ -17,7 +17,7 @@ export default function (pi: ExtensionAPI) {
 
   pi.on("tool_execution_end", async (event, _) => {
     if (willCommit && (event.toolName === "edit" || event.toolName === "write")) {
-      await pi.exec("bash", ["-lc", "git add * && git ls-files --deleted -z | xargs -0 -r git rm -- && git commit -m 'pi write'"]);
+      await pi.exec("bash", ["-lc", "git add . && git ls-files --deleted -z | xargs -0 -r git rm -- && git commit -m 'pi write'"]);
     }
   });
 }
