@@ -1,7 +1,14 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
+interface ExtensionSettings {
+  "edit-git-commit"?: {
+    willCommit?: boolean
+  }
+}
+
 export default function (pi: ExtensionAPI) {
-  let willCommit = false;
+  const settings = pi.getSettings() as ExtensionSettings
+  let willCommit = settings["edit-git-commit"]?.willCommit ?? false;
 
   pi.registerCommand("willCommit", {
 		description: "Toggles the willCommit boolean. On true it will commit every change after a edit or write.",
