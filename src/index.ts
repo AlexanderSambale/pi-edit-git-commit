@@ -15,9 +15,21 @@ export default function (pi: ExtensionAPI) {
 		},
 	});
 
-  pi.on("tool_execution_end", async (event, _) => {
+  pi.on("tool_execution_end", async (event, ctx) => {
     if (willCommit && (event.toolName === "edit" || event.toolName === "write")) {
-      await pi.exec("bash", ["-lc", "git add . && git ls-files --deleted -z | xargs -0 -r git rm -- && git commit -m 'pi write'"]);
+      const steps = [
+        "git add .",
+        `git ls-files --deleted -z | xargs -0 -r git rm --`,
+        `git commit -m 'pi write'`,
+      ];
+
+      for (const cmd of steps) {
+        const result = await pi.exec("bash", ["-lc", cmd]);
+        if (result.code !== 0) {
+          ctx.ui.notify(`Git step '${cmd}' failed: ${result.stderr}`, "warning");
+          return;
+        }
+      }
     }
   });
 }
