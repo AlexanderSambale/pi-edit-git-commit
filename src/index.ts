@@ -1,4 +1,4 @@
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 
 interface ExtensionSettings {
   "edit-git-commit"?: {
@@ -6,19 +6,28 @@ interface ExtensionSettings {
   }
 }
 
+function notifyCommit (willCommit: boolean, ctx: ExtensionContext) {
+  if (willCommit) {
+    ctx.ui.notify(`All changes will now be automatically commited.`, "info");
+    return
+  }
+  ctx.ui.notify(`No changes will be automatically commited.`, "info");
+}
+
 export default function (pi: ExtensionAPI) {
-  const settings = pi.getSettings() as ExtensionSettings
-  let willCommit = settings["edit-git-commit"]?.willCommit ?? false;
+  let willCommit = false;
+
+  pi.on("session_start", async (_, ctx) => {
+    const settings = pi.getSettings() as ExtensionSettings
+    willCommit = settings["edit-git-commit"]?.willCommit ?? false;
+    notifyCommit(willCommit, ctx);
+  });
 
   pi.registerCommand("willCommit", {
 		description: "Toggles the willCommit boolean. On true it will commit every change after a edit or write.",
 		handler: async (_, ctx) => {
       willCommit = !willCommit;
-      if (willCommit) {
-        ctx.ui.notify(`All changes will now be automatically commited.`, "info");
-        return
-      }
-      ctx.ui.notify(`No changes will be automatically commited.`, "info");
+      notifyCommit(willCommit, ctx);
 		},
 	});
 
